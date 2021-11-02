@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace prstat
+namespace PrStat.Core
 {
     public class PullRequest
     {
@@ -9,5 +9,12 @@ namespace prstat
         public string Description { get; set; }
         public string Url { get; set; }
         public List<Reviewer> Reviewers { get; set; }
+        public bool NeedsReview { get; set; }
+        public Author Author { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Id} {Title}";
+        }
     }
 }

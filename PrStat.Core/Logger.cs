@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace prstat
+namespace PrStat.Core
 {
     public class Logger
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace prstat
+namespace PrStat.Core
 {
     public enum ReviewVote
     {
@@ -24,6 +24,10 @@ namespace prstat
         public bool RequiresReview
         {
             get { return Vote == ReviewVote.NotReviewed || Vote == ReviewVote.NotReviewed; }
+        }
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

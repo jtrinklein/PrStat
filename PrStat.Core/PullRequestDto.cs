@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace prstat
+namespace PrStat.Core
 {
     public class PullRequestDto
     {
+        [JsonPropertyName("createdBy")]
+        public Author Author { get; set; }
         [JsonPropertyName("repository")]
         public RepositoryDto Repository { get; set; }
         [JsonPropertyName("pullRequestId")]
