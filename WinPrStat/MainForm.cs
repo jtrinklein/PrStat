@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Windows.Foundation.Collections;
+using WinPrStat;
 
 namespace WinPrStatForm
 {
@@ -33,12 +34,9 @@ namespace WinPrStatForm
             config = Config.LoadConfig(ConfigPath);
             state = ProgramState.LoadState(StatePath);
 
-            UpdateUiFromConfig(config);
-
             fetchTimer = CreateTimerForPrRefresh();
             notifyIcon = CreateNotifyIcon();
 
-            FetchReviewersFromPrs();
             FetchPullRequests();
         }
 
@@ -101,14 +99,6 @@ namespace WinPrStatForm
             FetchPullRequests();
         }
 
-        private void UpdateUiFromConfig(Config config)
-        {
-            txtAccessToken.Text = config.AccessToken;
-            txtUsername.Text = config.Username;
-            txtOrganization.Text = config.Organization;
-            txtProject.Text = config.Project;
-        }
-
         public void HandleToastActivated(ToastNotificationActivatedEventArgsCompat toastArgs)
         {
             if (InvokeRequired)
@@ -145,32 +135,10 @@ namespace WinPrStatForm
             txtLogBox.Text += $"{DateTime.Now}: {msg}\r\n";
         }
 
-
         internal void MarkPrAsReviewed(int prId)
         {
             state.Reviewed.Add(prId);
             Log($"{prId} - Marked as Reviewed");
-        }
-
-
-        private async void FetchReviewersFromPrs()
-        {
-            Log("Fetching reviewers from recent Pull Requests");
-            var prs = await adoApi.GetPullRequests(config);
-            var reviewersById = prs.SelectMany(pr => pr.Reviewers).GroupBy(r => r.Id).Select(g => g.First()).ToList().OrderBy(r => r.Name);
-            lstAvailableReviewers.Items.Clear();
-            lstActiveReviewers.Items.Clear();
-            foreach (var reviewer in reviewersById)
-            {
-                if (config.ReviewerIds.Contains(reviewer.Id))
-                {
-                    lstActiveReviewers.Items.Add(reviewer);
-                }
-                else
-                {
-                    lstAvailableReviewers.Items.Add(reviewer);
-                }
-            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -180,78 +148,6 @@ namespace WinPrStatForm
                 ProgramState.SaveState(state, StatePath);
                 //Config.SaveConfig(config, ConfigPath);
             }
-        }
-
-        private void btnSaveSettings_Click(object sender, EventArgs e)
-        {
-            config.Project = txtProject.Text;
-            config.Organization = txtOrganization.Text;
-            config.AccessToken = txtAccessToken.Text;
-            config.Username = txtUsername.Text;
-            config.ReviewerIds.Clear();
-            foreach (Reviewer reviewer in lstActiveReviewers.Items)
-            {
-                config.ReviewerIds.Add(reviewer.Id);
-            }
-        }
-
-        private void btnFetchReviewers_Click(object sender, EventArgs e)
-        {
-            FetchReviewersFromPrs();
-        }
-
-        private void btnAddReviewer_Click(object sender, EventArgs e)
-        {
-            AddReviewer();
-        }
-
-        private void AddReviewer()
-        {
-            var index = lstAvailableReviewers.SelectedIndex;
-            if (index == -1)
-            {
-                return;
-            }
-
-            lstActiveReviewers.Items.Add(lstAvailableReviewers.SelectedItem);
-
-            lstAvailableReviewers.Items.RemoveAt(index);
-            lstAvailableReviewers.SelectedIndex = Math.Min(index, lstAvailableReviewers.Items.Count - 1);
-        }
-
-        private void btnRemoveReviewer_Click(object sender, System.EventArgs e)
-        {
-            RemoveReviewer();
-        }
-        private void RemoveReviewer() 
-        {
-            var index = lstActiveReviewers.SelectedIndex;
-            if (index == -1)
-            {
-                return;
-            }
-
-            lstAvailableReviewers.Items.Add(lstActiveReviewers.SelectedItem);
-
-            lstActiveReviewers.Items.RemoveAt(index);
-            lstActiveReviewers.SelectedIndex = Math.Min(index, lstActiveReviewers.Items.Count - 1);
-        }
-
-        private void lstAvailableReviewers_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                AddReviewer();
-            }
-        }
-
-        private void lstActiveReviewers_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                RemoveReviewer();
-            }
-
         }
 
         private void btnFetchPrs_Click(object sender, EventArgs e)
@@ -341,6 +237,29 @@ namespace WinPrStatForm
         private void btnClearLogs_Click(object sender, EventArgs e)
         {
             txtLogBox.Text = string.Empty;
+        }
+
+        private void mnuSettings_Click(object sender, EventArgs e)
+        {
+            var form = new SettingsForm(config, adoApi);
+            form.OnSettingsSaved += cfg =>
+            {
+                config.Organization = cfg.Organization;
+                config.AccessToken = cfg.AccessToken;
+                config.Username = cfg.Username;
+                config.Project = cfg.Project;
+                config.ReviewerIds.Clear();
+                config.ReviewerIds.AddRange(cfg.ReviewerIds);
+
+                Config.SaveConfig(config, ConfigPath);
+                Log("Saved config.");
+            };
+            form.ShowDialog();
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
