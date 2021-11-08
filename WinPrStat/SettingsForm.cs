@@ -38,7 +38,19 @@ namespace WinPrStat
 
         private async void FetchReviewersFromPrs(Config c)
         {
-            var prs = await api.GetPullRequests(c);
+            pnlLoading.Visible = true;
+            grpReviewers.Enabled = false;
+            IList<PullRequest> prs;
+            try
+            {
+                prs = await api.GetPullRequests(c);
+            }
+            catch (Exception)
+            {
+                pnlLoading.Visible = false;
+                grpReviewers.Enabled = true;
+                return;
+            }
             var reviewersById = prs.SelectMany(pr => pr.Reviewers).GroupBy(r => r.Id).Select(g => g.First()).ToList().OrderBy(r => r.Name);
             lstAvailableReviewers.Items.Clear();
             lstActiveReviewers.Items.Clear();
@@ -53,6 +65,9 @@ namespace WinPrStat
                     lstAvailableReviewers.Items.Add(reviewer);
                 }
             }
+
+            pnlLoading.Visible = false;
+            grpReviewers.Enabled = true;
         }
 
         private void btnSaveSettings_Click(object sender, EventArgs e)
@@ -61,6 +76,9 @@ namespace WinPrStat
             config.Organization = txtOrganization.Text;
             config.AccessToken = txtAccessToken.Text;
             config.Username = txtUsername.Text;
+            config.MinimizeToTray = chkMinimizeToTray.Checked;
+            config.Autostart = chkAutostart.Checked;
+            config.ShowNotifications = chkShowNotifications.Checked;
             config.ReviewerIds.Clear();
             foreach (Reviewer reviewer in lstActiveReviewers.Items)
             {
@@ -168,6 +186,21 @@ namespace WinPrStat
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void button1_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void btnShowToken_MouseDown(object sender, MouseEventArgs e)
+        {
+            txtAccessToken.PasswordChar = '\0';
+        }
+
+        private void btnShowToken_MouseUp(object sender, MouseEventArgs e)
+        {
+            txtAccessToken.PasswordChar = '*';
         }
     }
 }

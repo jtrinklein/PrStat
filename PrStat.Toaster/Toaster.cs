@@ -39,7 +39,6 @@ namespace PrStat.Toaster
                     .SetContent("Dismiss")
                     .AddArgument(ActionArg, Action_Close)
                     .SetBackgroundActivation())
-
                 .Show();
         }
 

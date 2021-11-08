@@ -2,6 +2,7 @@
 using PrStat.Core;
 using PrStat.Toaster;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace WinPrStatForm
         private readonly AzureDevOpsApi adoApi = new();
         private readonly Timer fetchTimer;
         private readonly NotifyIcon notifyIcon;
+
 
         public MainForm()
         {
@@ -157,8 +159,21 @@ namespace WinPrStatForm
 
         private async void FetchPullRequests()
         {
+            IList<PullRequest> prs;
+
+            try
+            {
+
             Log("fetching pull requests");
-            var prs = (await adoApi.GetPullRequestListForReviewers(config));
+            prs = (await adoApi.GetPullRequestListForReviewers(config));
+
+            }
+            catch (Exception ex)
+            {
+                Log("An error occurred while fetching pull requests");
+                Log(ex.Message);
+                return;
+            }
             var prsNeedReview = prs.Where(pr => pr.NeedsReview && !state.Reviewed.Contains(pr.Id));
             var prsReviewed = prs.Where(pr => !pr.NeedsReview || state.Reviewed.Contains(pr.Id));
             var prsNeedToast = prsNeedReview.Where(pr => !state.ToastedIds.Contains(pr.Id));
@@ -177,7 +192,10 @@ namespace WinPrStatForm
 
             foreach (var pr in prsNeedToast)
             {
-                Toaster.GenerateToastForPr(pr);
+                if (config.ShowNotifications)
+                {
+                    Toaster.GenerateToastForPr(pr);
+                }
                 state.ToastedIds.Add(pr.Id);
             }
         }
@@ -212,7 +230,7 @@ namespace WinPrStatForm
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (FormWindowState.Minimized == this.WindowState)
+            if (FormWindowState.Minimized == this.WindowState && config.MinimizeToTray)
             {
                 Hide();
             }
@@ -260,6 +278,11 @@ namespace WinPrStatForm
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void lstActivePrs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnMarkReviewed.Enabled = lstActivePrs.SelectedIndex != -1;
         }
     }
 }

@@ -12,6 +12,9 @@ namespace PrStat.Core
         public List<string> ReviewerIds { get; set; } = new List<string>();
         public string AccessToken { get; set; }
         public string Username { get; set; }
+        public bool ShowNotifications { get; set; } = true;
+        public bool MinimizeToTray { get; set; } = true;
+        public bool Autostart { get; set; }
 
         public static void SaveConfig(Config c, string configPath)
         {
