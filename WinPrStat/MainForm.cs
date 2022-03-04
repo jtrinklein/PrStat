@@ -15,9 +15,10 @@ namespace WinPrStatForm
 {
     public partial class MainForm : Form
     {
-        readonly private string ConfigPath = Path.Join(AppContext.BaseDirectory, "config.json");
-        readonly private string StatePath = Path.Join(AppContext.BaseDirectory, "state.json");
         private readonly Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0.0.0");
+        private readonly string AppFolder = ".prstat";
+        private readonly string ConfigPath;
+        private readonly string StatePath;
         private readonly Config config;
         private readonly ProgramState state;
         private readonly AzureDevOpsApi adoApi = new();
@@ -29,6 +30,8 @@ namespace WinPrStatForm
             InitializeComponent();
 
             lblVersion.Text = version.ToString();
+            ConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppFolder, "config.json");
+            StatePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppFolder, "state.json");
 
             // Listen to notification activation
             ToastNotificationManagerCompat.OnActivated += HandleToastActivated;
