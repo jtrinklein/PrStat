@@ -285,5 +285,17 @@ namespace WinPrStatForm
         {
             btnMarkReviewed.Enabled = lstActivePrs.SelectedIndex != -1;
         }
+
+        private void btnExportLogs_Click(object sender, EventArgs e)
+        {
+            dlgExportLogs.ShowDialog();
+        }
+
+        private void dlgExportLogs_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var logs = txtLogBox.Text;
+            using var file = dlgExportLogs.OpenFile();
+            file.Write(Encoding.ASCII.GetBytes(logs));
+        }
     }
 }

@@ -46,6 +46,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnExportLogs = new System.Windows.Forms.Button();
+            this.dlgExportLogs = new System.Windows.Forms.SaveFileDialog();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -63,11 +65,10 @@
             this.lstActivePrs.FormattingEnabled = true;
             this.lstActivePrs.HorizontalScrollbar = true;
             this.lstActivePrs.IntegralHeight = false;
-            this.lstActivePrs.ItemHeight = 28;
-            this.lstActivePrs.Location = new System.Drawing.Point(3, 3);
-            this.lstActivePrs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.lstActivePrs.ItemHeight = 21;
+            this.lstActivePrs.Location = new System.Drawing.Point(3, 2);
             this.lstActivePrs.Name = "lstActivePrs";
-            this.lstActivePrs.Size = new System.Drawing.Size(599, 459);
+            this.lstActivePrs.Size = new System.Drawing.Size(525, 341);
             this.lstActivePrs.Sorted = true;
             this.lstActivePrs.TabIndex = 22;
             this.lstActivePrs.SelectedIndexChanged += new System.EventHandler(this.lstActivePrs_SelectedIndexChanged);
@@ -77,10 +78,9 @@
             // 
             this.btnMarkReviewed.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnMarkReviewed.Enabled = false;
-            this.btnMarkReviewed.Location = new System.Drawing.Point(3, 470);
-            this.btnMarkReviewed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnMarkReviewed.Location = new System.Drawing.Point(3, 346);
             this.btnMarkReviewed.Name = "btnMarkReviewed";
-            this.btnMarkReviewed.Size = new System.Drawing.Size(599, 31);
+            this.btnMarkReviewed.Size = new System.Drawing.Size(522, 23);
             this.btnMarkReviewed.TabIndex = 17;
             this.btnMarkReviewed.Text = "Mark As Reviewed";
             this.btnMarkReviewed.UseVisualStyleBackColor = true;
@@ -89,10 +89,9 @@
             // btnFetchPrs
             // 
             this.btnFetchPrs.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnFetchPrs.Location = new System.Drawing.Point(3, 501);
-            this.btnFetchPrs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnFetchPrs.Location = new System.Drawing.Point(3, 369);
             this.btnFetchPrs.Name = "btnFetchPrs";
-            this.btnFetchPrs.Size = new System.Drawing.Size(599, 31);
+            this.btnFetchPrs.Size = new System.Drawing.Size(522, 23);
             this.btnFetchPrs.TabIndex = 0;
             this.btnFetchPrs.Text = "Refresh PR List";
             this.btnFetchPrs.UseVisualStyleBackColor = true;
@@ -105,11 +104,10 @@
             this.lstReviewedPrs.FormattingEnabled = true;
             this.lstReviewedPrs.HorizontalScrollbar = true;
             this.lstReviewedPrs.IntegralHeight = false;
-            this.lstReviewedPrs.ItemHeight = 28;
-            this.lstReviewedPrs.Location = new System.Drawing.Point(3, 3);
-            this.lstReviewedPrs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.lstReviewedPrs.ItemHeight = 21;
+            this.lstReviewedPrs.Location = new System.Drawing.Point(3, 2);
             this.lstReviewedPrs.Name = "lstReviewedPrs";
-            this.lstReviewedPrs.Size = new System.Drawing.Size(599, 529);
+            this.lstReviewedPrs.Size = new System.Drawing.Size(522, 394);
             this.lstReviewedPrs.Sorted = true;
             this.lstReviewedPrs.TabIndex = 23;
             this.lstReviewedPrs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstReviewedPrs_MouseDoubleClick);
@@ -119,12 +117,11 @@
             this.txtLogBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLogBox.Location = new System.Drawing.Point(3, 4);
-            this.txtLogBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtLogBox.Location = new System.Drawing.Point(3, 3);
             this.txtLogBox.Multiline = true;
             this.txtLogBox.Name = "txtLogBox";
             this.txtLogBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLogBox.Size = new System.Drawing.Size(594, 480);
+            this.txtLogBox.Size = new System.Drawing.Size(520, 357);
             this.txtLogBox.TabIndex = 15;
             // 
             // statusStrip1
@@ -133,32 +130,30 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.lblVersion});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 598);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 446);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(613, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(536, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(100, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(79, 17);
             this.toolStripStatusLabel1.Text = "PrStat Version";
             // 
             // lblVersion
             // 
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(46, 20);
+            this.lblVersion.Size = new System.Drawing.Size(37, 17);
             this.lblVersion.Text = "v1.0.0";
             // 
             // btnClearLogs
             // 
             this.btnClearLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearLogs.Location = new System.Drawing.Point(435, 492);
-            this.btnClearLogs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnClearLogs.Location = new System.Drawing.Point(381, 365);
             this.btnClearLogs.Name = "btnClearLogs";
-            this.btnClearLogs.Size = new System.Drawing.Size(162, 33);
+            this.btnClearLogs.Size = new System.Drawing.Size(142, 25);
             this.btnClearLogs.TabIndex = 23;
             this.btnClearLogs.Text = "Clear Logs";
             this.btnClearLogs.UseVisualStyleBackColor = true;
@@ -171,8 +166,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(613, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(536, 24);
             this.menuStrip1.TabIndex = 25;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -182,20 +176,20 @@
             this.mnuSettings,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // mnuSettings
             // 
             this.mnuSettings.Name = "mnuSettings";
-            this.mnuSettings.Size = new System.Drawing.Size(145, 26);
+            this.mnuSettings.Size = new System.Drawing.Size(116, 22);
             this.mnuSettings.Text = "&Settings";
             this.mnuSettings.Click += new System.EventHandler(this.mnuSettings_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(145, 26);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.quitToolStripMenuItem.Text = "&Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -205,10 +199,11 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 30);
+            this.tabControl1.Location = new System.Drawing.Point(0, 24);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(613, 568);
+            this.tabControl1.Size = new System.Drawing.Size(536, 422);
             this.tabControl1.TabIndex = 26;
             // 
             // tabPage1
@@ -216,10 +211,11 @@
             this.tabPage1.Controls.Add(this.lstActivePrs);
             this.tabPage1.Controls.Add(this.btnMarkReviewed);
             this.tabPage1.Controls.Add(this.btnFetchPrs);
-            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(605, 535);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Size = new System.Drawing.Size(528, 394);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Needs Review";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -227,36 +223,56 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.lstReviewedPrs);
-            this.tabPage2.Location = new System.Drawing.Point(4, 29);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(605, 535);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage2.Size = new System.Drawing.Size(528, 398);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Reviewed";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.btnExportLogs);
             this.tabPage3.Controls.Add(this.btnClearLogs);
             this.tabPage3.Controls.Add(this.txtLogBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 29);
+            this.tabPage3.Location = new System.Drawing.Point(4, 24);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(605, 535);
+            this.tabPage3.Size = new System.Drawing.Size(528, 394);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Logs";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // btnExportLogs
+            // 
+            this.btnExportLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportLogs.Location = new System.Drawing.Point(233, 365);
+            this.btnExportLogs.Name = "btnExportLogs";
+            this.btnExportLogs.Size = new System.Drawing.Size(142, 25);
+            this.btnExportLogs.TabIndex = 24;
+            this.btnExportLogs.Text = "Export Logs";
+            this.btnExportLogs.UseVisualStyleBackColor = true;
+            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
+            // 
+            // dlgExportLogs
+            // 
+            this.dlgExportLogs.DefaultExt = "txt";
+            this.dlgExportLogs.FileName = "prstat-log-export.txt";
+            this.dlgExportLogs.Filter = "Text Files|*.txt";
+            this.dlgExportLogs.FileOk += new System.ComponentModel.CancelEventHandler(this.dlgExportLogs_FileOk);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(613, 624);
+            this.ClientSize = new System.Drawing.Size(536, 468);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "MainForm";
             this.Text = "PrStat";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -293,5 +309,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button btnExportLogs;
+        private System.Windows.Forms.SaveFileDialog dlgExportLogs;
     }
 }

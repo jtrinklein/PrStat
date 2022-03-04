@@ -9,6 +9,7 @@
 	<PackageIcon>prstat.png</PackageIcon>
 	<ApplicationIcon>PrStat.ico</ApplicationIcon>
 	<DebugType>none</DebugType>
+	<RepositoryUrl>https://github.com/jtrinklein/PrStat</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
