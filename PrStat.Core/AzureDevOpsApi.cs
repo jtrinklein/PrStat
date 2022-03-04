@@ -11,16 +11,24 @@ namespace PrStat.Core
 {
     public class AzureDevOpsApi
     {
-        private readonly HttpClient httpClient;
-
         private readonly string apiVersionQueryString = "api-version=6.0";
+        private readonly int maxRetryCount = 3;
+
+        private HttpClient httpClient;
+
         public AzureDevOpsApi()
         {
-            httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(
+            httpClient = CreateHttpClient();
+        }
+
+        private HttpClient CreateHttpClient()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "PRStat .Net 5 Windows Client");
+            client.DefaultRequestHeaders.Add("User-Agent", "PRStat .Net 5 Windows Client");
+            return client;
         }
 
         private AuthenticationHeaderValue GetAuthHeader(Config config)
@@ -36,14 +44,55 @@ namespace PrStat.Core
 
             return await FetchPullRequests(url, config);
         }
-        private async Task<IList<PullRequest>> FetchPullRequests(string url, Config config)
+
+        private async Task<HttpResponseMessage> GetWithRetry(string url, Config config, int retryCount = 0)
         {
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
             httpClient.DefaultRequestHeaders.Add("User-Agent", "PRStat .Net 5 Windows Client");
             httpClient.DefaultRequestHeaders.Authorization = GetAuthHeader(config);
-            var dto = await JsonSerializer.DeserializeAsync<PullRequestsResponseDto>(await httpClient.GetStreamAsync(url));
+            HttpResponseMessage resp;
+
+            try
+            {
+                resp = await httpClient.GetAsync(url, HttpCompletionOption.ResponseContentRead);
+            }
+            catch (TaskCanceledException ex)
+            {
+                return await HandleRetry(url, config, retryCount, ex);
+            }
+
+            if (resp.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (resp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    httpClient = CreateHttpClient();
+                }
+                return await HandleRetry(url, config, retryCount);
+            }
+
+            return resp;
+
+            async Task<HttpResponseMessage> HandleRetry(string url, Config config, int retryCount, Exception ex = null)
+            {
+                if (retryCount < maxRetryCount)
+                {
+                    return await GetWithRetry(url, config, retryCount + 1);
+                }
+                else
+                {
+                    httpClient = CreateHttpClient();
+                    throw new HttpRequestException("Retry limit exceeded.", inner:ex);
+                }
+            }
+        }
+
+        private async Task<IList<PullRequest>> FetchPullRequests(string url, Config config)
+        {
+            var resp = await GetWithRetry(url, config);
+            
+            var dto = await JsonSerializer.DeserializeAsync<PullRequestsResponseDto>(resp.Content.ReadAsStream());
             return dto.PullRequests.Select(prDto =>
             {
                 var pr = new PullRequest
