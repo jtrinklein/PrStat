@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Windows.Foundation.Collections;
 using WinPrStat;
@@ -119,7 +120,6 @@ namespace WinPrStatForm
             // Obtain any user input (text boxes, menu selections) from the notification
             ValueSet userInput = toastArgs.UserInput;
 
-            //logger.Log($"For PR: {prId} doing Action: {action}");
 
             Log($"Toast Action {action} for pr {prId}");
             if (action == Toaster.Action_View)
@@ -134,7 +134,7 @@ namespace WinPrStatForm
 
         internal void Log(string msg)
         {
-            txtLogBox.Text += $"{DateTime.Now}: {msg}\r\n";
+            txtLogBox.Text = $"{DateTime.Now}: {msg}\r\n" + txtLogBox.Text;
         }
 
         internal void MarkPrAsReviewed(int prId)
@@ -148,7 +148,6 @@ namespace WinPrStatForm
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 ProgramState.SaveState(state, StatePath);
-                //Config.SaveConfig(config, ConfigPath);
             }
         }
 
@@ -164,8 +163,8 @@ namespace WinPrStatForm
             try
             {
 
-            Log("fetching pull requests");
-            prs = (await adoApi.GetPullRequestListForReviewers(config));
+                Log("fetching pull requests");
+                prs = (await adoApi.GetPullRequestListForReviewers(config));
 
             }
             catch (Exception ex)
