@@ -15,21 +15,20 @@ namespace WinPrStatForm
 {
     public partial class MainForm : Form
     {
-        readonly private string version = "1.0.0";
         readonly private string ConfigPath = Path.Join(AppContext.BaseDirectory, "config.json");
         readonly private string StatePath = Path.Join(AppContext.BaseDirectory, "state.json");
+        private readonly Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0.0.0");
         private readonly Config config;
         private readonly ProgramState state;
         private readonly AzureDevOpsApi adoApi = new();
         private readonly Timer fetchTimer;
         private readonly NotifyIcon notifyIcon;
 
-
         public MainForm()
         {
             InitializeComponent();
 
-            lblVersion.Text = version;
+            lblVersion.Text = version.ToString();
 
             // Listen to notification activation
             ToastNotificationManagerCompat.OnActivated += HandleToastActivated;
