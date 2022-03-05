@@ -13,6 +13,7 @@
 	<Copyright>Copyright 2022 James Trinklein</Copyright>
 	<PackageProjectUrl>https://apps.trinkle.in/</PackageProjectUrl>
 	<Authors>James Trinklein</Authors>
+	<Company>Trinklein Apps</Company>
 	<AssemblyVersion>$(Version)</AssemblyVersion>
 	<FileVersion>$(AssemblyVersion)</FileVersion>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
