@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
+﻿using PrStat.Core;
+using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WinPrStat
 {
     partial class AboutBox : Form
     {
-        private readonly string Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        private UpdateUtils UpdateUtils = new UpdateUtils();
+        private readonly string Version = Assembly.GetExecutingAssembly().GetName().Version.SemverStringOrZeros();
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
+            this.Text = $"About {AssemblyTitle}";
             this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            this.labelVersion.Text = $"Version {AssemblyVersion}";
             this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
         }
 
@@ -29,12 +23,11 @@ namespace WinPrStat
             var info = await UpdateUtils.CheckForUpdates(Version);
             if (info.NewerVersionAvailable)
             {
-                var result = MessageBox.Show($"Version {info.ServerVersion} is available. Do you want to update now?", $"Newer version available", MessageBoxButtons.YesNo);
-                //if (result == DialogResult.Yes)
-                //{
-                //    FetchZipfile(info.ZipUrl);
-                //    UnpackZip
-                //}
+                var result = MessageBox.Show($"Current version: {Version}\r\nNew Version: {info.Version}\r\nWould you like to view the release page now?", $"A new version is available!", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    WebLauncher.OpenUrl(info.Url);
+                }
             }
             else
             {
