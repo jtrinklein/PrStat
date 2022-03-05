@@ -15,7 +15,7 @@ namespace WinPrStatForm
 {
     public partial class MainForm : Form
     {
-        private readonly Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0.0.0");
+        private readonly string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.SemverStringOrZeros();
         private readonly string AppFolder = ".prstat";
         private readonly string ConfigPath;
         private readonly string StatePath;
@@ -24,12 +24,13 @@ namespace WinPrStatForm
         private readonly AzureDevOpsApi adoApi = new();
         private readonly Timer fetchTimer;
         private readonly NotifyIcon notifyIcon;
+        private readonly Timer updateCheckTimer;
 
         public MainForm()
         {
             InitializeComponent();
 
-            lblVersion.Text = version.ToString();
+            lblVersion.Text = Version;
             ConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppFolder, "config.json");
             StatePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppFolder, "state.json");
 
@@ -40,21 +41,33 @@ namespace WinPrStatForm
             state = ProgramState.LoadState(StatePath);
 
             fetchTimer = CreateTimerForPrRefresh();
+            updateCheckTimer = CreateUpdateCheckTimer();
             notifyIcon = CreateNotifyIcon();
 
             FetchPullRequests();
+            CheckForUpdates();
+        }
+
+        private Timer CreateUpdateCheckTimer()
+        {
+            var sevenDaysMs = 7.HoursToMilliseconds();
+            return CreateTimerForIntervalWithAction(sevenDaysMs, CheckForUpdatesTimer_Tick);
         }
 
         private Timer CreateTimerForPrRefresh()
         {
-            const int fiveMinutes = 5 * 60 * 1000;
+            var fiveMinutesMs = 5.MinutesToMilliseconds();
+            return CreateTimerForIntervalWithAction(fiveMinutesMs, FetchTimer_Tick);
+        }
 
+        private Timer CreateTimerForIntervalWithAction(int interval, EventHandler action)
+        {
             var timer = new Timer
             {
-                Interval = fiveMinutes,
-
+                Interval = interval,
             };
-            timer.Tick += FetchTimer_Tick;
+
+            timer.Tick += action;
             timer.Start();
             return timer;
         }
@@ -99,6 +112,10 @@ namespace WinPrStatForm
 
         }
 
+        private void CheckForUpdatesTimer_Tick(object? sender, EventArgs e)
+        {
+            CheckForUpdates();
+        }
         private void FetchTimer_Tick(object? sender, EventArgs e)
         {
             FetchPullRequests();
@@ -116,24 +133,35 @@ namespace WinPrStatForm
 
             // Obtain the arguments from the notification
             ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
-            var prId = args.GetInt(Toaster.PrIdArg);
-            var action = args.Get(Toaster.ActionArg);
-            var url = args.Get(Toaster.PrUrlArg);
-            // Obtain any user input (text boxes, menu selections) from the notification
-            ValueSet userInput = toastArgs.UserInput;
+            var toastType = args.Get(Toaster.Arg_ToastType);
+            var action = args.Get(Toaster.Arg_Action);
+            var url = args.Get(Toaster.Arg_Url);
 
-
-            Log($"Toast Action {action} for pr {prId}");
+            Log($"Toast Action {action} for {toastType}");
             if (action == Toaster.Action_View)
             {
                 WebLauncher.OpenUrl(url);
             }
             else if (action == Toaster.Action_MarkRead)
             {
+                var prId = args.GetInt(Toaster.Arg_PrId);
                 MarkPrAsReviewed(prId);
             }
         }
-
+        internal async void CheckForUpdates()
+        {
+            Log("Checking for updates");
+            var info = await UpdateUtils.CheckForUpdates(Version);
+            if (info.NewerVersionAvailable)
+            {
+                Log($"New Update Available: Version {info.Version}");
+                Toaster.GenerateToastForUpdate(info.Url, info.Version);
+            }
+            else
+            {
+                Log("No new updates available");
+            }
+        }
         internal void Log(string msg)
         {
             txtLogBox.Text = $"{DateTime.Now}: {msg}\r\n" + txtLogBox.Text;
@@ -296,6 +324,11 @@ namespace WinPrStatForm
             var logs = txtLogBox.Text;
             using var file = dlgExportLogs.OpenFile();
             file.Write(Encoding.ASCII.GetBytes(logs));
+        }
+
+        private void aboutPrStatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutBox().ShowDialog();
         }
     }
 }

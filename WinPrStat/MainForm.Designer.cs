@@ -48,6 +48,8 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnExportLogs = new System.Windows.Forms.Button();
             this.dlgExportLogs = new System.Windows.Forms.SaveFileDialog();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutPrStatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -107,7 +109,7 @@
             this.lstReviewedPrs.ItemHeight = 21;
             this.lstReviewedPrs.Location = new System.Drawing.Point(3, 2);
             this.lstReviewedPrs.Name = "lstReviewedPrs";
-            this.lstReviewedPrs.Size = new System.Drawing.Size(522, 394);
+            this.lstReviewedPrs.Size = new System.Drawing.Size(522, 390);
             this.lstReviewedPrs.Sorted = true;
             this.lstReviewedPrs.TabIndex = 23;
             this.lstReviewedPrs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstReviewedPrs_MouseDoubleClick);
@@ -163,7 +165,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(536, 24);
@@ -182,14 +185,14 @@
             // mnuSettings
             // 
             this.mnuSettings.Name = "mnuSettings";
-            this.mnuSettings.Size = new System.Drawing.Size(116, 22);
+            this.mnuSettings.Size = new System.Drawing.Size(180, 22);
             this.mnuSettings.Text = "&Settings";
             this.mnuSettings.Click += new System.EventHandler(this.mnuSettings_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "&Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -227,7 +230,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage2.Size = new System.Drawing.Size(528, 398);
+            this.tabPage2.Size = new System.Drawing.Size(528, 394);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Reviewed";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -262,6 +265,21 @@
             this.dlgExportLogs.FileName = "prstat-log-export.txt";
             this.dlgExportLogs.Filter = "Text Files|*.txt";
             this.dlgExportLogs.FileOk += new System.ComponentModel.CancelEventHandler(this.dlgExportLogs_FileOk);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutPrStatToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // aboutPrStatToolStripMenuItem
+            // 
+            this.aboutPrStatToolStripMenuItem.Name = "aboutPrStatToolStripMenuItem";
+            this.aboutPrStatToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutPrStatToolStripMenuItem.Text = "&About PrStat";
+            this.aboutPrStatToolStripMenuItem.Click += new System.EventHandler(this.aboutPrStatToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -311,5 +329,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnExportLogs;
         private System.Windows.Forms.SaveFileDialog dlgExportLogs;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutPrStatToolStripMenuItem;
     }
 }
