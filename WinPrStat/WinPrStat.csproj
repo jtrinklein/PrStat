@@ -10,6 +10,13 @@
 	<ApplicationIcon>PrStat.ico</ApplicationIcon>
 	<DebugType>none</DebugType>
 	<RepositoryUrl>https://github.com/jtrinklein/PrStat</RepositoryUrl>
+	<Copyright>Copyright 2022 James Trinklein</Copyright>
+	<PackageProjectUrl>https://apps.trinkle.in/</PackageProjectUrl>
+	<Authors>James Trinklein</Authors>
+	<AssemblyVersion>$(Version)</AssemblyVersion>
+	<FileVersion>$(AssemblyVersion)</FileVersion>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Description>A simple tool for managing pull requests in Azure Dev Ops.</Description>
   </PropertyGroup>
 
   <ItemGroup>
