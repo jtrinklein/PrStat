@@ -21,7 +21,12 @@ namespace PrStat.Core
             using var f = File.OpenWrite(configPath);
             f.Write(Encoding.ASCII.GetBytes(JsonSerializer.Serialize(c)));
         }
-
+        private static Config CreateNewConfigFile(string configPath)
+        {
+            var config = new Config();
+            SaveConfig(config, configPath);
+            return config;
+        }
         public static Config LoadConfig(string configPath)
         {
             try
@@ -30,12 +35,14 @@ namespace PrStat.Core
                 var config = JsonSerializer.Deserialize<Config>(f.ReadToEnd());
                 return config;
             }
+            catch (DirectoryNotFoundException)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(configPath));
+                return CreateNewConfigFile(configPath);
+            }
             catch (FileNotFoundException)
             {
-                var config = new Config();
-
-                SaveConfig(config, configPath);
-                return config;
+                return CreateNewConfigFile(configPath);
             }
         }
     }
