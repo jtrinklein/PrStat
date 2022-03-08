@@ -2,7 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WinPrStat"
-#define MyAppVersion "1.2.0"
+#ifndef Version
+#define Version "0.0.0-from-commandline"
+#endif
 #define MyAppPublisher "Trinklein Apps"
 #define MyAppURL "https://apps.trinkle.in/"
 #define MyAppExeName "WinPrStat.exe"
@@ -12,8 +14,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{D9B1DA25-4378-45D4-9AC6-904F04AAAFAF}
 AppName={#MyAppName}
-AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
+AppVersion={#Version}
+;AppVerName={#MyAppName} {#Version}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -24,7 +26,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=C:\src\prstat\WinPrStat\bin\setup
-OutputBaseFilename=setupWinPrStat
+OutputBaseFilename=setupWinPrStat_{#Version}
 SetupIconFile=C:\src\prstat\WinPrStat\bin\WinPrStat\PrStat.ico
 Compression=lzma
 SolidCompression=yes
