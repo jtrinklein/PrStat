@@ -3,3 +3,4 @@ obj/
 .vs/
 *.pubxml.user
 *.csproj.user
+*.user
