@@ -103,5 +103,7 @@ Create-SetupExe
 Create-JsonFile
 Write-Step "Copy Files to Web Folder"
 Copy-FilesToWebFolder
+Write-Output "Setup File: $setupExePath"
+Write-Output "Zip File  : $zipPath"
 Write-Step "Generate File Integrity Table Markdown"
 Generate-FileIntegrityTableMarkdown
