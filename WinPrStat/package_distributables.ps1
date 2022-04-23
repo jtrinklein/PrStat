@@ -63,9 +63,7 @@ function Create-JsonFile {
     Write-Output "{`"Version`":`"${Version}`"}" > $versionJsonPath
 }
 
-function Copy-DistributableFilesToWebFolder {
-    Copy-Item $zipPath $webFolder
-    Copy-Item $setupExePath $webFolder
+function Copy-FilesToWebFolder {
     Copy-Item $versionJsonPath $webFolder
 }
 
@@ -103,7 +101,7 @@ Write-Step "Create Distributable Files"
 Create-ZipFile
 Create-SetupExe
 Create-JsonFile
-Write-Step "Copy Distributables to Web Folder"
-Copy-DistributableFilesToWebFolder
+Write-Step "Copy Files to Web Folder"
+Copy-FilesToWebFolder
 Write-Step "Generate File Integrity Table Markdown"
 Generate-FileIntegrityTableMarkdown
