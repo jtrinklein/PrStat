@@ -13,7 +13,7 @@ namespace PrStat.Core
         public string AccessToken { get; set; }
         public string Username { get; set; }
         public bool ShowNotifications { get; set; } = true;
-        public bool MinimizeToTray { get; set; };
+        public bool MinimizeToTray { get; set; }
         public bool Autostart { get; set; }
 
         public static void SaveConfig(Config c, string configPath)
