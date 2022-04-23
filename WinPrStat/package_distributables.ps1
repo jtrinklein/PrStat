@@ -71,9 +71,15 @@ function copy-files-to-webfolder {
     Copy-Item "${binFolder}\$versionJsonFile" $webFolder
 }
 
+function compute-hash {
+    Get-FileHash "${binFolder}\setup\*.exe"
+    Get-FileHash "${binFolder}\*.zip"
+}
+
 clean-publish-files
 build-and-publish
 create-zipfile
 create-installer
 create-json
 copy-files-to-webfolder
+compute-hashes

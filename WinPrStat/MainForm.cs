@@ -295,6 +295,7 @@ namespace WinPrStatForm
                 config.AccessToken = cfg.AccessToken;
                 config.Username = cfg.Username;
                 config.Project = cfg.Project;
+                config.MinimizeToTray = cfg.MinimizeToTray;
                 config.ReviewerIds.Clear();
                 config.ReviewerIds.AddRange(cfg.ReviewerIds);
 
