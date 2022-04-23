@@ -1,85 +1,109 @@
 param(
     [string]
-    [parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true)]
     $Version
 )
 
 $baseFolder = "C:\src\prstat\WinPrStat"
 $binFolder = "${baseFolder}\bin"
 $webFolder = "C:\src\trinkle.in\www"
+$publishFolder = (Select-String "PublishDir>(.*)</" ${baseFolder}\Properties\PublishProfiles\FolderProfile.pubxml).Matches.Groups[1].Value
+
 $zipBasename = "WinPrStat"
+$zipFilename = "${zipBasename}_v${Version}.zip"
+$zipPath = "${binFolder}\${zipFilename}"
+
 $versionJsonFile = "winprstat.latest.json"
+$versionJsonPath = "$binFolder\$versionJsonFile"
 
-function get-publish-folder {
-    return (select-string "PublishDir>(.*)</" ${baseFolder}\Properties\PublishProfiles\FolderProfile.pubxml).Matches.Groups[1].Value
+$setupExeFilename = "setupWinPrStat_${Version}.exe"
+$setupFolder = "${binFolder}\setup"
+$setupExePath = "${setupFolder}\${setupExeFilename}"
+
+function Delete-SetupFolderItems {
+    Remove-Item "$setupFolder\*"
 }
 
-function get-zip-path {
-    return "${binFolder}\${zipBasename}_v${Version}.zip"
-}
-
-function empty-setup-folder {
-    $setupFolderPath = "${binFolder}\setup"
-    Remove-Item $setupFolderPath\*
-}
-
-function empty-publish-folder {
-    Write-Output "Clearing output files"
-    $publishFolder = get-publish-folder
-    $zipPath = get-zip-path
+function Delete-PublishFolderItems {
+    Write-Output "Deleting publish output files"
+    
     Remove-Item -Force $zipPath
     Remove-Item -Recurse "$publishFolder\*"
     Get-ChildItem $publishFolder
 }
 
-function remove-zipfiles {
+function Delete-ZipFiles {
     Remove-Item "${binFolder}\${zipBasename}*.zip"
 }
 
-function remove-json {
-    Remove-Item "${binFolder}\${versionJsonFile}"
+function Delete-JsonFile {
+    Remove-Item $versionJsonPath
 }
 
-function clean-publish-files {
-    empty-publish-folder
-    empty-setup-folder
-    remove-zipfiles
-    remove-json
+function Delete-DistributableFiles {
+    Delete-PublishFolderItems
+    Delete-SetupFolderItems
+    Delete-ZipFiles
+    Delete-JsonFile
 }
 
-function build-and-publish {
+function Execute-DotnetPublish {
     dotnet publish ${baseFolder}\WinPrStat.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile
 }
 
-function create-installer {
+function Create-SetupExe {
     iscc /dVersion=$Version .\createInstaller.iss
 }
 
-function create-zipfile {
-    $publishFolder = get-publish-folder
-    $zipPath = get-zip-path
+function Create-ZipFile {
     7z a -r $zipPath $publishFolder
 }
 
-function create-json {
-    Write-Output "{`"Version`":`"${Version}`"}" > "${binFolder}\${versionJsonFile}"
+function Create-JsonFile {
+    Write-Output "{`"Version`":`"${Version}`"}" > $versionJsonPath
 }
 
-function copy-files-to-webfolder {
-    Copy-Item "${binFolder}\*.zip" $webFolder
-    Copy-Item "${binFolder}\setup\*.exe" $webFolder
-    Copy-Item "${binFolder}\$versionJsonFile" $webFolder
+function Copy-FilesToWebFolder {
+    Copy-Item $versionJsonPath $webFolder
 }
 
-function compute-hash {
-    Get-FileHash "${binFolder}\setup\*.exe"
-    Get-FileHash "${binFolder}\*.zip"
+function Generate-FileIntegrityTableMarkdown {
+    $setupHash = ( Get-FileHash $setupExePath )
+    $zipHash = ( Get-FileHash $zipPath )
+    $filePaths = $setupExePath, $zipPath
+    
+    $tableMarkdown = "## File Integrity Hashes`n|  File | Algorithm | Hash |`n|-----|--------|------|`n"
+    foreach ($fp in $filePaths) {
+        $fileHash = Get-FileHash $fp
+        $hash = $fileHash.Hash
+        $file = Split-Path -leaf $fileHash.Path
+        $alg = $fileHash.Algorithm
+        $tableMarkdown += "| $file | $alg | $hash |`n"
+    }
+
+    Write-Output "File Integrity Table Markdown:"
+    Write-Output $tableMarkdown
 }
 
-clean-publish-files
-build-and-publish
-create-zipfile
-create-installer
-create-json
-copy-files-to-webfolder
-compute-hashes
+function Write-Step {
+    param (
+        $step
+    )
+    $pipe = "-----------------------------------------"
+    Write-Output "`n$pipe`n$step`n$pipe"
+}
+
+Write-Step "Remove Old Distributable Files"
+Delete-DistributableFiles
+Write-Step "Run dotnet publish"
+Execute-DotnetPublish
+Write-Step "Create Distributable Files"
+Create-ZipFile
+Create-SetupExe
+Create-JsonFile
+Write-Step "Copy Files to Web Folder"
+Copy-FilesToWebFolder
+Write-Output "Setup File: $setupExePath"
+Write-Output "Zip File  : $zipPath"
+Write-Step "Generate File Integrity Table Markdown"
+Generate-FileIntegrityTableMarkdown
